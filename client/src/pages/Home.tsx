@@ -15,7 +15,7 @@
  * 9. Blog Preview
  * 10. Final CTA / Download
  */
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "wouter";
 import {
   Chrome,
@@ -149,11 +149,79 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+// ── Slot-machine digit roller ─────────────────────────────────────────────────
+function SlotDigit({ value, delay = 0 }: { value: string; delay?: number }) {
+  const [displayed, setDisplayed] = useState(value);
+  const [rolling, setRolling] = useState(false);
+  const prevRef = useRef(value);
+
+  useEffect(() => {
+    if (prevRef.current === value) return;
+    prevRef.current = value;
+    setRolling(true);
+    const t = setTimeout(() => {
+      setDisplayed(value);
+      setRolling(false);
+    }, 2400 + delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+
+  return (
+    <span
+      className="slot-digit"
+      data-rolling={rolling}
+      style={{ "--slot-delay": `${delay}ms` } as React.CSSProperties}
+    >
+      {rolling ? displayed : displayed}
+    </span>
+  );
+}
+
+function SlotNumber({ value, suffix = "", color = "ig" }: { value: number; suffix?: string; color?: "ig" | "muted" }) {
+  const str = String(value);
+  const digits = str.split("");
+
+  return (
+    <span className="slot-number inline-flex items-end gap-0">
+      {digits.map((d, i) => (
+        <SlotDigit key={i} value={d} delay={i * 60} />
+      ))}
+      {suffix && (
+        <span
+          className={`slot-suffix ml-0.5 ${color === "ig" ? "ig-gradient-text" : "text-white/50"}`}
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
+        >
+          {suffix}
+        </span>
+      )}
+    </span>
+  );
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 export default function Home() {
   const [repostCount, setRepostCount] = useState(250);
+  const [inputVal, setInputVal] = useState("250");
+  const [isSpinning, setIsSpinning] = useState(false);
+  const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const clearInsTime = Math.ceil((repostCount * 3) / 60);
   const manualTime = Math.ceil((repostCount * 10) / 60);
   const savedTime = manualTime - clearInsTime;
+  const savedPct = manualTime > 0 ? Math.round((savedTime / manualTime) * 100) : 0;
+
+  const triggerSpin = useCallback((newCount: number) => {
+    setIsSpinning(true);
+    setRepostCount(newCount);
+    if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+    spinTimerRef.current = setTimeout(() => setIsSpinning(false), 2600);
+  }, []);
+
+  const handleInput = (raw: string) => {
+    setInputVal(raw);
+    const n = Math.max(1, Math.min(10000, parseInt(raw) || 1));
+    triggerSpin(n);
+  };
 
   return (
     <div className="min-h-screen" style={{ background: "#0D0D14" }}>
@@ -613,84 +681,219 @@ export default function Home() {
 
       {/* ===== TIME ESTIMATOR ===== */}
       <section className="py-20" aria-labelledby="estimator-heading">
+        {/* Slot machine keyframes injected inline */}
+        <style>{`
+          @keyframes slotSpin {
+            0%   { transform: translateY(0);     opacity: 1; }
+            8%   { transform: translateY(-120%); opacity: 0; }
+            9%   { transform: translateY(120%);  opacity: 0; }
+            18%  { transform: translateY(0);     opacity: 1; }
+            26%  { transform: translateY(-120%); opacity: 0; }
+            27%  { transform: translateY(120%);  opacity: 0; }
+            36%  { transform: translateY(0);     opacity: 1; }
+            44%  { transform: translateY(-120%); opacity: 0; }
+            45%  { transform: translateY(120%);  opacity: 0; }
+            54%  { transform: translateY(0);     opacity: 1; }
+            62%  { transform: translateY(-120%); opacity: 0; }
+            63%  { transform: translateY(120%);  opacity: 0; }
+            72%  { transform: translateY(0);     opacity: 1; }
+            80%  { transform: translateY(-120%); opacity: 0; }
+            81%  { transform: translateY(120%);  opacity: 0; }
+            90%  { transform: translateY(0);     opacity: 1; }
+            100% { transform: translateY(0);     opacity: 1; }
+          }
+          @keyframes slotGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(131,58,180,0); }
+            30%       { box-shadow: 0 0 24px 4px rgba(131,58,180,0.45); }
+            60%       { box-shadow: 0 0 16px 2px rgba(253,29,29,0.3); }
+          }
+          @keyframes savingsPop {
+            0%   { transform: scale(0.85); opacity: 0; }
+            60%  { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1);   opacity: 1; }
+          }
+          .slot-digit {
+            display: inline-block;
+            overflow: hidden;
+            line-height: 1;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+          }
+          .slot-digit[data-rolling="true"] {
+            animation: slotSpin 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: var(--slot-delay, 0ms);
+          }
+          .slot-card-spinning {
+            animation: slotGlow 2.4s ease-in-out;
+          }
+          .savings-pop {
+            animation: savingsPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+          }
+          /* Preset buttons */
+          .preset-btn {
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: 1px solid rgba(131,58,180,0.25);
+            background: rgba(131,58,180,0.08);
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: all 0.15s;
+          }
+          .preset-btn:hover, .preset-btn.active {
+            background: rgba(131,58,180,0.22);
+            border-color: rgba(131,58,180,0.5);
+            color: #c084fc;
+          }
+        `}</style>
+
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
             <h2
               id="estimator-heading"
-              className="text-3xl md:text-4xl font-bold text-white mb-4"
+              className="text-3xl md:text-4xl font-bold text-white mb-3"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
               ⏱️ How Long Will It Take?
             </h2>
             <p className="text-white/50 mb-10">
-              Enter your number of Instagram reposts to see how much time ClearIns saves you.
+              Enter your repost count — watch the numbers spin.
             </p>
 
-            <div className="glass-card p-8">
+            <div
+              className={`glass-card p-8 transition-all ${isSpinning ? "slot-card-spinning" : ""}`}
+            >
+              {/* Input + Presets */}
               <div className="mb-8">
                 <label
                   htmlFor="repost-count"
-                  className="block text-white/70 text-sm mb-3 font-medium"
+                  className="block text-white/60 text-xs mb-3 font-semibold uppercase tracking-widest"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  Number of reposts to remove:
+                  Number of Instagram reposts
                 </label>
                 <input
                   id="repost-count"
                   type="number"
                   min="1"
                   max="10000"
-                  value={repostCount}
-                  onChange={(e) => setRepostCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full text-center text-2xl font-bold text-white bg-transparent border rounded-xl py-3 px-4 focus:outline-none focus:ring-2"
+                  value={inputVal}
+                  onChange={(e) => handleInput(e.target.value)}
+                  className="w-full text-center text-3xl font-extrabold text-white bg-transparent border-2 rounded-2xl py-4 px-4 focus:outline-none transition-all"
                   style={{
-                    borderColor: "rgba(131, 58, 180, 0.4)",
+                    borderColor: isSpinning ? "rgba(131,58,180,0.7)" : "rgba(131,58,180,0.35)",
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    boxShadow: isSpinning ? "0 0 20px rgba(131,58,180,0.25)" : "none",
                   }}
                 />
+                {/* Quick presets */}
+                <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+                  {[50, 100, 250, 500, 1000].map((n) => (
+                    <button
+                      key={n}
+                      className={`preset-btn ${repostCount === n ? "active" : ""}`}
+                      onClick={() => { setInputVal(String(n)); triggerSpin(n); }}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              {/* Slot display */}
+              <div className="grid grid-cols-2 gap-5 mb-5">
+                {/* ClearIns card */}
                 <div
-                  className="rounded-xl p-5 text-center"
-                  style={{ background: "rgba(131, 58, 180, 0.1)", border: "1px solid rgba(131, 58, 180, 0.2)" }}
+                  className="rounded-2xl p-6 text-center relative overflow-hidden"
+                  style={{
+                    background: "rgba(131,58,180,0.1)",
+                    border: isSpinning ? "1px solid rgba(131,58,180,0.5)" : "1px solid rgba(131,58,180,0.2)",
+                    transition: "border-color 0.3s",
+                  }}
                 >
-                  <div className="text-purple-400 text-xs font-semibold mb-2 uppercase tracking-wide">
+                  {/* Scanline shimmer */}
+                  {isSpinning && (
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(131,58,180,0.04) 3px, rgba(131,58,180,0.04) 4px)",
+                      }}
+                    />
+                  )}
+                  <div className="text-purple-400 text-xs font-bold mb-3 uppercase tracking-widest">
                     🚀 With ClearIns
                   </div>
                   <div
-                    className="ig-gradient-text text-4xl font-extrabold"
+                    className="ig-gradient-text text-5xl font-extrabold leading-none mb-1"
                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   >
-                    {clearInsTime}m
+                    <SlotNumber value={clearInsTime} suffix="m" color="ig" />
                   </div>
-                  <div className="text-white/40 text-xs mt-1">~3 sec/repost</div>
+                  <div className="text-purple-400/60 text-xs mt-2 font-medium">~3 sec / repost</div>
                 </div>
+
+                {/* Manual card */}
                 <div
-                  className="rounded-xl p-5 text-center"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                  className="rounded-2xl p-6 text-center relative overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: isSpinning ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.06)",
+                    transition: "border-color 0.3s",
+                  }}
                 >
-                  <div className="text-white/40 text-xs font-semibold mb-2 uppercase tracking-wide">
+                  {isSpinning && (
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.02) 3px, rgba(255,255,255,0.02) 4px)",
+                      }}
+                    />
+                  )}
+                  <div className="text-white/40 text-xs font-bold mb-3 uppercase tracking-widest">
                     👆 Manual Deletion
                   </div>
                   <div
-                    className="text-white/60 text-4xl font-extrabold"
+                    className="text-white/55 text-5xl font-extrabold leading-none mb-1"
                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   >
-                    {manualTime}m
+                    <SlotNumber value={manualTime} suffix="m" color="muted" />
                   </div>
-                  <div className="text-white/40 text-xs mt-1">~10 sec/repost</div>
+                  <div className="text-white/30 text-xs mt-2 font-medium">~10 sec / repost</div>
                 </div>
               </div>
 
+              {/* Savings banner */}
               <div
-                className="mt-6 rounded-xl p-4 text-center"
-                style={{ background: "rgba(34, 197, 94, 0.08)", border: "1px solid rgba(34, 197, 94, 0.2)" }}
+                key={`${clearInsTime}-${manualTime}`}
+                className="rounded-2xl p-4 text-center savings-pop"
+                style={{
+                  background: "rgba(34,197,94,0.08)",
+                  border: "1px solid rgba(34,197,94,0.2)",
+                }}
               >
-                <span className="text-green-400 font-bold">
-                  🚀 Save {savedTime} minutes ({Math.round((savedTime / manualTime) * 100)}% faster)
+                <span
+                  className="text-green-400 font-bold text-base"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                >
+                  🚀 Save{" "}
+                  <span className="text-green-300">{savedTime} minutes</span>
+                  {" "}—{" "}
+                  <span className="text-green-300">{savedPct}% faster</span>
+                  {" "}with ClearIns
                 </span>
               </div>
+
+              {/* Spinning indicator */}
+              {isSpinning && (
+                <div className="mt-4 flex items-center justify-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <span className="text-white/30 text-xs ml-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Calculating...</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

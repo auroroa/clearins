@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import InstaDemoPanel from "@/components/InstaDemoPanel";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663482458145/ThxLfMhDv3ynviZUpEz57j/clearins-hero-bg-DnqJ9oBvwq4osFjnLgeQ9n.webp";
 const FEATURE_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663482458145/ThxLfMhDv3ynviZUpEz57j/clearins-feature-clean-5MXzwdKCjKj56eD6ayGCKz.webp";
@@ -200,6 +201,7 @@ function SlotNumber({ value, suffix = "", color = "ig" }: { value: number; suffi
 // ──────────────────────────────────────────────────────────────────────────────
 
 export default function Home() {
+  const [demoOpen, setDemoOpen] = useState(false);
   const [repostCount, setRepostCount] = useState(250);
   const [inputVal, setInputVal] = useState("250");
   const [isSpinning, setIsSpinning] = useState(false);
@@ -286,15 +288,15 @@ export default function Home() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animate-delay-300">
-            <a
-              href="#download"
+            <button
+              onClick={() => setDemoOpen(true)}
               id="download"
               className="btn-ig pulse-glow px-8 py-4 text-base rounded-xl font-bold text-white flex items-center gap-2.5 w-full sm:w-auto justify-center"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", border: "none", cursor: "pointer" }}
             >
               <Chrome size={20} />
               Add to Chrome — It's Free
-            </a>
+            </button>
             <a
               href="#download"
               className="px-8 py-4 text-base rounded-xl font-semibold text-white/80 flex items-center gap-2.5 w-full sm:w-auto justify-center"
@@ -1113,6 +1115,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      <InstaDemoPanel open={demoOpen} onClose={() => setDemoOpen(false)} />
     </div>
   );
 }

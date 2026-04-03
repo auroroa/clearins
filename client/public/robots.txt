@@ -2,6 +2,6 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://cleartins.app/sitemap.xml
+Sitemap: https://clearins.io/sitemap.xml
 
 # Disallow admin paths (none for this static site)

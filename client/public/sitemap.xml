@@ -4,85 +4,114 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- Homepage — Primary keyword target -->
+  <!-- Homepage — Primary keyword: instagram repost remover -->
   <url>
-    <loc>https://cleartins.app/</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- How It Works -->
   <url>
-    <loc>https://cleartins.app/how-it-works</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/how-it-works</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
 
   <!-- FAQ -->
   <url>
-    <loc>https://cleartins.app/faq</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/faq</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Blog Index -->
   <url>
-    <loc>https://cleartins.app/blog</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/blog</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
 
-  <!-- Blog Posts -->
+  <!-- Blog Article 1: how to remove repost on instagram -->
   <url>
-    <loc>https://cleartins.app/blog/how-to-remove-repost-on-instagram</loc>
+    <loc>https://clearins.io/blog/how-to-remove-repost-on-instagram</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <!-- Blog Article 2: instagram repost remover extension -->
   <url>
-    <loc>https://cleartins.app/blog/instagram-repost-remover-extension</loc>
+    <loc>https://clearins.io/blog/instagram-repost-remover-extension</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
 
+  <!-- Blog Article 3: bulk delete instagram reposts -->
   <url>
-    <loc>https://cleartins.app/blog/bulk-delete-instagram-reposts</loc>
+    <loc>https://clearins.io/blog/bulk-delete-instagram-reposts</loc>
     <lastmod>2026-03-05</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
 
+  <!-- Blog Article 4: how to unrepost on instagram -->
   <url>
-    <loc>https://cleartins.app/blog/how-to-unrepost-on-instagram</loc>
+    <loc>https://clearins.io/blog/how-to-unrepost-on-instagram</loc>
     <lastmod>2026-02-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
+  <!-- Blog Article 5: instagram repost cleaner guide -->
   <url>
-    <loc>https://cleartins.app/blog/instagram-repost-cleaner-guide</loc>
+    <loc>https://clearins.io/blog/instagram-repost-cleaner-guide</loc>
     <lastmod>2026-02-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
-  <!-- Legal -->
+  <!-- Blog Article 6: how to delete reposts on instagram -->
   <url>
-    <loc>https://cleartins.app/privacy</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/blog/how-to-delete-reposts-on-instagram</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Blog Article 7: instagram repost not showing -->
+  <url>
+    <loc>https://clearins.io/blog/instagram-repost-not-showing</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Article 8: instagram repost vs share -->
+  <url>
+    <loc>https://clearins.io/blog/instagram-repost-vs-share</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://clearins.io/privacy</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
+  <!-- Terms of Service -->
   <url>
-    <loc>https://cleartins.app/terms</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://clearins.io/terms</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

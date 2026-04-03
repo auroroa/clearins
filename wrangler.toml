@@ -4,3 +4,4 @@ pages_build_output_dir = "dist/public"
 
 [assets]
 directory = "dist/public"
+not_found_handling = "single-page-application"

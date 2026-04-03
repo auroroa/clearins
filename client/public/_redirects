@@ -1,2 +1,3 @@
-# Cloudflare Pages SPA redirect — all routes to index.html
-/*    /index.html   200
+# Cloudflare Pages redirects
+# SPA fallback is handled automatically by wrangler.toml assets config
+# No manual redirect rules needed for static Vite + React Router apps
